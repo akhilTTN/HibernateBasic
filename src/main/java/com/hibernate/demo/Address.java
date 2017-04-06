@@ -1,8 +1,11 @@
 package com.hibernate.demo;
 
+import javax.persistence.Embeddable;
+
 /**
  * Created by akhil on 6/4/17.
  */
+@Embeddable
 public class Address {
     int streetNo;
     String location;

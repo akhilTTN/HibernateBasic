@@ -7,6 +7,8 @@ import org.hibernate.cfg.Configuration;
 import java.time.LocalDate;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Application {
@@ -31,7 +33,30 @@ public class Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        author.setAddress(createAddressofAuthor());
+        author.setSubjects(createListOfSubject());
         session.save(author);
+    }
+
+    List createListOfSubject(){
+        List list= new ArrayList();
+        System.out.println("Enter the list of subjects");
+        System.out.println("Enter how many subjects you want to add?");
+        int size=sc.nextInt();
+        for (int i=0;i<size;i++)
+            list.add(sc.next());
+        return list;
+    }
+
+    Address createAddressofAuthor(){
+        Address address= new Address();
+        System.out.println("Enter Street Number");
+        address.setStreetNo(sc.nextInt());
+        System.out.println("Enter Location");
+        address.setLocation(sc.nextLine());
+        System.out.println("Enter State");
+        address.setState(sc.nextLine());
+        return address;
     }
 
     void readObject(Session session) {
@@ -49,6 +74,10 @@ public class Application {
             System.out.println("Last Name: " + author.getLastName());
             System.out.println("Age: " + author.getAge());
             System.out.println("Date of Birth " + author.getDob());
+            System.out.println("Address of the Author ");
+            System.out.println("Street Number" + author.getAddress().getStreetNo());
+            System.out.println("Location" + author.getAddress().getLocation());
+            System.out.println("State" + author.getAddress().getState());
             System.out.println("Do you want to update. \n Press y to continue and n to exit");
             ch = sc.next();
             if (ch.equals("y")) {
@@ -56,6 +85,9 @@ public class Application {
                 System.out.println("Press 2 to update Last Name");
                 System.out.println("Press 3 to update Age");
                 System.out.println("Press 4 to update Date of Birth");
+                System.out.println("Press 5 to update Street Number of the Author");
+                System.out.println("Press 6 to update Location of the Author");
+                System.out.println("Press 7 to update State of the Author");
                 innerch = sc.nextInt();
                 switch (innerch) {
                     case 1:
@@ -87,8 +119,25 @@ public class Application {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+                    case 5:
+                        System.out.println("Enter updated Street Number");
+                        int street=sc.nextInt();
+                        author.getAddress().setStreetNo(street);
+                        session.update(author);
+                        break;
+                    case 6:
+                        System.out.println("Enter updated Location");
+                        String location=sc.nextLine();
+                        author.getAddress().setLocation(location);
+                        session.update(author);
+                        break;
+                    case 7:
+                        System.out.println("Enter updated State");
+                        String state=sc.nextLine();
+                        author.getAddress().setState(state);
+                        session.update(author);
                     default:
-                        System.out.println("Enter from 1 to 3");
+                        System.out.println("Enter from 1 to 6");
                 }
         } else if (ch.equals("n")) {
                 System.out.println("Do you want to delete it???\n Press y to delete and n to delete");

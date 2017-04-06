@@ -2,14 +2,14 @@ package com.hibernate.demo;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by akhil on 24/3/17.
  */
 @Entity
 public class Author {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @Id @GeneratedValue(strategy = GenerationType.TABLE)
     int id;
     @Column(name="fname")
     String firstName;
@@ -19,10 +19,27 @@ public class Author {
     int age;
     LocalDate dob;
 
+    @ElementCollection
+    List<String> subjects= new ArrayList<>();
+
     @Embedded
     Address address;
 
+    public Address getAddress() {
+        return address;
+    }
 
+    public List<String> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(List<String> subjects) {
+        this.subjects = subjects;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
     public LocalDate getDob() {
         return dob;
@@ -72,6 +89,7 @@ public class Author {
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
                 ", dob=" + dob +
+                ", address=" + address +
                 '}';
     }
 }

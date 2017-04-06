@@ -4,43 +4,127 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.time.LocalDate;
+import java.text.ParseException;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
 public class Application {
+    static Scanner sc = new Scanner(System.in);
+
+    LocalDate createdate(String date)throws ParseException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date,formatter);
+    }
+
+    void createAuthorObject(Session session) {
+        Author author = new Author();
+        System.out.println("Enter first name");
+        author.setFirstName(sc.next());
+        System.out.println("Enter last name");
+        author.setLastName(sc.next());
+        System.out.println("Enter your age");
+        author.setAge(sc.nextInt());
+        System.out.println("Enter Date of birth as (yyyy-MM-dd)");
+        try {
+            author.setDob(createdate(sc.next()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        session.save(author);
+    }
+
+    void readObject(Session session) {
+        int row, innerch;
+        String ch;
+        System.out.println("Enter id of the Author you want to see");
+        row = sc.nextInt();
+        Author author;
+        if (session.get(Author.class, row) == null) {
+            System.out.println("No data at row " + row);
+        } else {
+            author = session.get(Author.class, row);
+            System.out.println("Id: " + author.getId());
+            System.out.println("First Name: " + author.getFirstName());
+            System.out.println("Last Name: " + author.getLastName());
+            System.out.println("Age: " + author.getAge());
+            System.out.println("Date of Birth " + author.getDob());
+            System.out.println("Do you want to update. \n Press y to continue and n to exit");
+            ch = sc.next();
+            if (ch.equals("y")) {
+                System.out.println("Press 1 to update First Name");
+                System.out.println("Press 2 to update Last Name");
+                System.out.println("Press 3 to update Age");
+                System.out.println("Press 4 to update Date of Birth");
+                innerch = sc.nextInt();
+                switch (innerch) {
+                    case 1:
+                        String upfname;
+                        System.out.println("Enter updated First Name");
+                        upfname = sc.next();
+                        author.setFirstName(upfname);
+                        session.update(author);
+                        break;
+                    case 2:
+                        String uplname;
+                        System.out.println("Enter updated First Name");
+                        uplname = sc.next();
+                        author.setLastName(uplname);
+                        session.update(author);
+                        break;
+                    case 3:
+                        int upage;
+                        System.out.println("Enter update age");
+                        upage = sc.nextInt();
+                        author.setAge(upage);
+                        session.update(author);
+                        break;
+                    case 4:
+                        System.out.println("Enter update Date of Birth");
+                        String sdate = sc.next();
+                        try {
+                            author.setDob(createdate(sdate));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    default:
+                        System.out.println("Enter from 1 to 3");
+                }
+        } else if (ch.equals("n")) {
+                System.out.println("Do you want to delete it???\n Press y to delete and n to delete");
+                String innerchs = sc.next();
+                if (innerchs.equals("y")) {
+                    if (session.load(Author.class, row) == null) {
+                        System.out.println("No data at row " + row);
+                    } else
+                        session.delete(author);
+                }
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
-
-        SessionFactory sessionFactory= new Configuration().configure().buildSessionFactory();
+        Application app = new Application();
+        String ch = "";
+        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        Employee employee1 = new Employee();
-        employee1.setId(1);
-        employee1.setName("Emp 1");
-        session.save(employee1);
+        do {
+            app.createAuthorObject(session);
+            System.out.println("Press y for inserting more data");
+            System.out.println("Press n to stop");
+            ch = sc.next();
+        } while (ch.equals("Y") || (ch.equals("y")));
 
-        Employee employee2 = new Employee();
-        employee2.setId(2);
-        employee2.setName("Emp 2");
-        session.save(employee2);
+        do {
+            app.readObject(session);
+            System.out.println("Press y for reading more data");
+            System.out.println("Press n to stop");
+            ch = sc.next();
+        } while (ch.equals("Y") || (ch.equals("y")));
 
-        Employee employee3 = new Employee();
-        employee3.setId(3);
-        employee3.setName("Emp 3");
-        session.save(employee3);
-
-        Employee employee4 = new Employee();
-        employee4.setId(4);
-        employee4.setName("Emp 4");
-        session.save(employee4);
-
-        Employee employee5 = new Employee();
-        employee5.setId(5);
-        employee5.setName("Emp 5");
-        session.save(employee5);
-
-        Employee employee6 = new Employee();
-        employee6.setId(6);
-        employee6.setName("Emp 6");
-        session.save(employee6);
 
         session.getTransaction().commit();
         session.close();

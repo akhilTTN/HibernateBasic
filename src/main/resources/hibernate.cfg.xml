@@ -7,7 +7,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/poc</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password"/>
+        <property name="hibernate.connection.password">root</property>
 
         <!--JDBC connection pool-->
         <property name="connection.pool_size">10</property>
@@ -19,11 +19,11 @@
         <property name="show_sql">true</property>
 
         <!--drop or re-create database schema at startup-->
-        <property name="hibernate.hbm2ddl.auto">create</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
 
         <!--Annotated entity class-->
         <!--<mapping class="com.hibernate.demo.Person"/>-->
-        <mapping class="com.hibernate.demo.Employee"/>
-
+        <!--<mapping class="com.hibernate.demo.Employee"/>-->
+        <mapping class="com.hibernate.demo.Author"/>
     </session-factory>
 </hibernate-configuration>

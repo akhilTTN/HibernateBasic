@@ -25,7 +25,7 @@
         <!--<mapping class="com.hibernate.demo.Person"/>-->
         <!--<mapping class="com.hibernate.demo.Employee"/>-->
         <mapping class="com.hibernate.demo.Author"/>
-        <mapping class="com.hibernate.demo.Address"/>
+        <!--<mapping class="com.hibernate.demo.Address"/>-->
         <mapping class="com.hibernate.demo.Book"/>
     </session-factory>
 </hibernate-configuration>

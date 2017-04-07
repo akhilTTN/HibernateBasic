@@ -1,6 +1,7 @@
 package com.hibernate.demo;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by akhil on 7/4/17.
@@ -9,12 +10,16 @@ import javax.persistence.*;
 @Entity
 public class Book {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     String bookname;
 
-    @ManyToOne
-    Author author;
+   /* @ManyToOne
+    Author author;*/
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    List<Author> author;
 
     public int getId() {
         return id;
@@ -24,11 +29,20 @@ public class Book {
         this.id = id;
     }
 
-    public Author getAuthor() {
+    /*public Author getAuthor() {
         return author;
     }
 
     public void setAuthor(Author author) {
+        this.author = author;
+    }*/
+
+
+    public List<Author> getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(List<Author> author) {
         this.author = author;
     }
 

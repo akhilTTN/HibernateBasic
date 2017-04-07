@@ -7,10 +7,7 @@ import org.hibernate.cfg.Configuration;
 import java.time.LocalDate;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Application {
     static Scanner sc = new Scanner(System.in);
@@ -20,7 +17,7 @@ public class Application {
         return LocalDate.parse(date, formatter);
     }
 
-    void createAuthorObject(Session session) {
+    Author createAuthorObject(Session session) {
         Author author = new Author();
         System.out.println("Enter first name");
         author.setFirstName(sc.next());
@@ -38,19 +35,44 @@ public class Application {
         author.setSubjects(createListOfSubject());
 //        author.setBook(AuthorsBook());
 //
-        List list= addListofBook();
+        List<Book> list = addListofBook(author);
         author.setBooks(list);
-        Iterator itr= list.listIterator();
-        while(itr.hasNext()) {
-            Book book = (Book) itr.next();
-            book.setAuthor(author);
-            session.save(book);
-        }
+//        Iterator itr = list.listIterator();
+//        while (itr.hasNext()) {
+//            Book book = (Book) itr.next();
+////            book.setAuthor(author);
+////            book.setAuthor(contribtingAuthors());
+//            session.save(book);
+//        }
 
 /*        for(int i=0;i<addListofBook().size();i++)
             addListofBook().get(i).*/
+        return author;
 
-        session.save(author);
+    }
+
+    List contribtingAuthors(Book book) {
+        List<Author> list = new ArrayList();
+        System.out.println("Does this book has any contributing authors");
+        System.out.println("press y to enter the names and press n to exit");
+        String ch = sc.next();
+        if (ch.equals("y")) {
+            System.out.println("Enter the no of authors");
+            int no_of_contributing_authors = sc.nextInt();
+            for (int i = 0; i < no_of_contributing_authors; i++) {
+                System.out.println("Enter the name of the author");
+                String name = sc.next();
+                /*if (session.get(Author.class, id) == null) {
+                    System.out.println("Author is not in the database");
+                }*/
+                Author author= new Author();
+                author.setFirstName(name);
+                author.setBooks(new ArrayList<>(Arrays.asList(book)));
+                list.add(author);
+            }
+            return list;
+        }
+        return null;
     }
 
     List createListOfSubject() {
@@ -71,19 +93,20 @@ public class Application {
     }*/
 
 
-    List addListofBook() {
+    List addListofBook(Author author) {
         List<Book> list = new ArrayList<>();
         System.out.println("How many books have you written till now");
         int no_of_books = sc.nextInt();
         for (int i = 0; i < no_of_books; i++) {
             Book book = new Book();
             book.setBookname(sc.next());
+            book.setAuthor(contribtingAuthors(book));
+            book.getAuthor().add(author);
             list.add(book);
+//            session.save(book);
         }
         return list;
     }
-
-
 
 
     Address createAddressofAuthor() {
@@ -120,8 +143,10 @@ public class Application {
             for (int i = 0; i < author.getSubjects().size(); i++)
                 System.out.println("Subject " + i + " " + author.getSubjects().get(i));
 //            System.out.println("Book written by you "+author.getBook().getBookname());
+            System.out.println(author);
+            System.out.println(author.getBooks());
             for (int i = 0; i < author.getBooks().size(); i++)
-                System.out.println("Book " + i + 1 + " " + author.getBooks().get(i).getBookname());
+                System.out.println("Book " + (i + 1) + " " + author.getBooks().get(i).getBookname());
             System.out.println("Do you want to update. \n Press y to continue and n to exit");
             ch = sc.next();
             if (ch.equals("y")) {
@@ -211,7 +236,8 @@ public class Application {
         session.beginTransaction();
 
         do {
-            app.createAuthorObject(session);
+            Author author=app.createAuthorObject(session);
+            session.persist(author);
             System.out.println("Press y for inserting more data");
             System.out.println("Press n to stop");
             ch = sc.next();
@@ -223,7 +249,6 @@ public class Application {
             System.out.println("Press n to stop");
             ch = sc.next();
         } while (ch.equals("Y") || (ch.equals("y")));
-
 
         session.getTransaction().commit();
         session.close();

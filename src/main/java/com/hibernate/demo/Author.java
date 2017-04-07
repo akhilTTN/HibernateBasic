@@ -31,7 +31,9 @@ public class Author {
 //    @OneToMany              //One to many Unidirectional
 //    List<Book> books;
 
-    @OneToMany(mappedBy = "author")
+    /*@OneToMany(mappedBy = "author")
+    List<Book> books;*/
+    @ManyToMany(cascade = CascadeType.PERSIST)
     List<Book> books;
 
     /*public Book getBook() {
@@ -114,7 +116,9 @@ public class Author {
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +
                 ", dob=" + dob +
+                ", subjects=" + subjects +
                 ", address=" + address +
+                ", books=" + books +
                 '}';
     }
 }

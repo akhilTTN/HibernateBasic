@@ -9,7 +9,7 @@ import java.util.*;
  */
 @Entity
 public class Author {
-    @Id @GeneratedValue(strategy = GenerationType.TABLE)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     @Column(name="fname")
     String firstName;
@@ -25,16 +25,29 @@ public class Author {
     @Embedded
     Address address;
 
-    @OneToOne
-    Book book;
+//    @OneToOne
+//    Book book;
 
+//    @OneToMany              //One to many Unidirectional
+//    List<Book> books;
 
-    public Book getBook() {
+    @OneToMany(mappedBy = "author")
+    List<Book> books;
+
+    /*public Book getBook() {
         return book;
     }
 
     public void setBook(Book book) {
         this.book = book;
+    }*/
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     public Address getAddress() {

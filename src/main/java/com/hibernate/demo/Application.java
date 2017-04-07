@@ -8,15 +8,16 @@ import java.time.LocalDate;
 import java.text.ParseException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
 public class Application {
     static Scanner sc = new Scanner(System.in);
 
-    LocalDate createdate(String date)throws ParseException {
+    LocalDate createdate(String date) throws ParseException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date,formatter);
+        return LocalDate.parse(date, formatter);
     }
 
     void createAuthorObject(Session session) {
@@ -35,29 +36,58 @@ public class Application {
         }
         author.setAddress(createAddressofAuthor());
         author.setSubjects(createListOfSubject());
-        author.setBook(AuthorsBook());
+//        author.setBook(AuthorsBook());
+//
+        List list= addListofBook();
+        author.setBooks(list);
+        Iterator itr= list.listIterator();
+        while(itr.hasNext()) {
+            Book book = (Book) itr.next();
+            book.setAuthor(author);
+            session.save(book);
+        }
+
+/*        for(int i=0;i<addListofBook().size();i++)
+            addListofBook().get(i).*/
+
         session.save(author);
     }
 
-    List createListOfSubject(){
-        List list= new ArrayList();
+    List createListOfSubject() {
+        List list = new ArrayList();
         System.out.println("Enter the list of subjects");
         System.out.println("Enter how many subjects you want to add?");
-        int size=sc.nextInt();
-        for (int i=0;i<size;i++)
+        int size = sc.nextInt();
+        for (int i = 0; i < size; i++)
             list.add(sc.next());
         return list;
     }
 
-    Book AuthorsBook(){
+   /* Book AuthorsBook(){
         Book book=new Book();
         System.out.println("Enter your book's name");
         book.setBookname(sc.next());
         return book;
+    }*/
+
+
+    List addListofBook() {
+        List<Book> list = new ArrayList<>();
+        System.out.println("How many books have you written till now");
+        int no_of_books = sc.nextInt();
+        for (int i = 0; i < no_of_books; i++) {
+            Book book = new Book();
+            book.setBookname(sc.next());
+            list.add(book);
+        }
+        return list;
     }
 
-    Address createAddressofAuthor(){
-        Address address= new Address();
+
+
+
+    Address createAddressofAuthor() {
+        Address address = new Address();
         System.out.println("Enter Street Number");
         address.setStreetNo(sc.nextInt());
         sc.nextLine();
@@ -87,9 +117,11 @@ public class Application {
             System.out.println("Street Number " + author.getAddress().getStreetNo());
             System.out.println("Location " + author.getAddress().getLocation());
             System.out.println("State " + author.getAddress().getState());
-            for(int i=0;i<author.getSubjects().size();i++)
-                System.out.println("Subject "+i+" " + author.getSubjects().get(i));
-            System.out.println("Book written by you "+author.getBook().getBookname());
+            for (int i = 0; i < author.getSubjects().size(); i++)
+                System.out.println("Subject " + i + " " + author.getSubjects().get(i));
+//            System.out.println("Book written by you "+author.getBook().getBookname());
+            for (int i = 0; i < author.getBooks().size(); i++)
+                System.out.println("Book " + i + 1 + " " + author.getBooks().get(i).getBookname());
             System.out.println("Do you want to update. \n Press y to continue and n to exit");
             ch = sc.next();
             if (ch.equals("y")) {
@@ -134,30 +166,30 @@ public class Application {
                         }
                     case 5:
                         System.out.println("Enter updated Street Number");
-                        int street=sc.nextInt();
+                        int street = sc.nextInt();
                         author.getAddress().setStreetNo(street);
                         session.update(author);
                         break;
                     case 6:
                         System.out.println("Enter updated Location");
-                        String location=sc.nextLine();
+                        String location = sc.nextLine();
                         author.getAddress().setLocation(location);
                         session.update(author);
                         break;
                     case 7:
                         System.out.println("Enter updated State");
-                        String state=sc.nextLine();
+                        String state = sc.nextLine();
                         author.getAddress().setState(state);
                         session.update(author);
                     case 8:
                         System.out.println("Enter updated book name");
-                        String book=sc.nextLine();
-                        author.getBook().setBookname(book);
+                        String book = sc.nextLine();
+//                        author.getBook().setBookname(book);
                         session.update(author);
                     default:
                         System.out.println("Enter from 1 to 6");
                 }
-        } else if (ch.equals("n")) {
+            } else if (ch.equals("n")) {
                 System.out.println("Do you want to delete it???\n Press y to delete and n to delete");
                 String innerchs = sc.next();
                 if (innerchs.equals("y")) {

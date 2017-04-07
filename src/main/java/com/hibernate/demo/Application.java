@@ -35,6 +35,7 @@ public class Application {
         }
         author.setAddress(createAddressofAuthor());
         author.setSubjects(createListOfSubject());
+        author.setBook(AuthorsBook());
         session.save(author);
     }
 
@@ -48,10 +49,18 @@ public class Application {
         return list;
     }
 
+    Book AuthorsBook(){
+        Book book=new Book();
+        System.out.println("Enter your book's name");
+        book.setBookname(sc.next());
+        return book;
+    }
+
     Address createAddressofAuthor(){
         Address address= new Address();
         System.out.println("Enter Street Number");
         address.setStreetNo(sc.nextInt());
+        sc.nextLine();
         System.out.println("Enter Location");
         address.setLocation(sc.nextLine());
         System.out.println("Enter State");
@@ -75,9 +84,12 @@ public class Application {
             System.out.println("Age: " + author.getAge());
             System.out.println("Date of Birth " + author.getDob());
             System.out.println("Address of the Author ");
-            System.out.println("Street Number" + author.getAddress().getStreetNo());
-            System.out.println("Location" + author.getAddress().getLocation());
-            System.out.println("State" + author.getAddress().getState());
+            System.out.println("Street Number " + author.getAddress().getStreetNo());
+            System.out.println("Location " + author.getAddress().getLocation());
+            System.out.println("State " + author.getAddress().getState());
+            for(int i=0;i<author.getSubjects().size();i++)
+                System.out.println("Subject "+i+" " + author.getSubjects().get(i));
+            System.out.println("Book written by you "+author.getBook().getBookname());
             System.out.println("Do you want to update. \n Press y to continue and n to exit");
             ch = sc.next();
             if (ch.equals("y")) {
@@ -88,6 +100,7 @@ public class Application {
                 System.out.println("Press 5 to update Street Number of the Author");
                 System.out.println("Press 6 to update Location of the Author");
                 System.out.println("Press 7 to update State of the Author");
+                System.out.println("Press 8 to update Book written by author");
                 innerch = sc.nextInt();
                 switch (innerch) {
                     case 1:
@@ -135,6 +148,11 @@ public class Application {
                         System.out.println("Enter updated State");
                         String state=sc.nextLine();
                         author.getAddress().setState(state);
+                        session.update(author);
+                    case 8:
+                        System.out.println("Enter updated book name");
+                        String book=sc.nextLine();
+                        author.getBook().setBookname(book);
                         session.update(author);
                     default:
                         System.out.println("Enter from 1 to 6");

@@ -25,6 +25,18 @@ public class Author {
     @Embedded
     Address address;
 
+    @OneToOne
+    Book book;
+
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
     public Address getAddress() {
         return address;
     }
